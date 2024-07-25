@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int minEatingSpeed(std::vector<int>& piles, int h) {
+        int left = 1;
+        int right = *std::max_element(piles.begin(), piles.end());
+        
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canEatAll(piles, h, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return left;
+    }
+    
+private:
+    bool canEatAll(const std::vector<int>& piles, int h, int k) {
+        long long hours = 0;
+        for (int pile : piles) {
+            hours += (pile + k - 1) / k; // Ceiling division
+        }
+        return hours <= h;
+    }
+};
+
+// Main function for testing
+int main() {
+    Solution solution;
+    
+    // Test case 1
+    std::vector<int> piles1 = {3, 6, 7, 11};
+    int h1 = 8;
+    std::cout << "Test case 1 result: " << solution.minEatingSpeed(piles1, h1) << std::endl;
+    
+    // Test case 2
+    std::vector<int> piles2 = {30, 11, 23, 4, 20};
+    int h2 = 5;
+    std::cout << "Test case 2 result: " << solution.minEatingSpeed(piles2, h2) << std::endl;
+    
+    // Test case 3
+    std::vector<int> piles3 = {30, 11, 23, 4, 20};
+    int h3 = 6;
+    std::cout << "Test case 3 result: " << solution.minEatingSpeed(piles3, h3) << std::endl;
+    
+    return 0;
+}
