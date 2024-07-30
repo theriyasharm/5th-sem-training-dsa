@@ -1,0 +1,92 @@
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+// Function to find the intersection node of two linked lists
+Node* findIntersection(Node* firstHead, Node* secondHead) {
+    if (firstHead == nullptr || secondHead == nullptr)
+        return nullptr;
+
+    Node* ptr1 = firstHead;
+    Node* ptr2 = secondHead;
+
+    while (ptr1 != ptr2) {
+        // Move ptr1 to the head of the second list after reaching the end of the first list
+        ptr1 = ptr1 == nullptr ? secondHead : ptr1->next;
+
+        // Move ptr2 to the head of the first list after reaching the end of the second list
+        ptr2 = ptr2 == nullptr ? firstHead : ptr2->next;
+    }
+
+    return ptr1;  // This is the intersection point (or nullptr if no intersection)
+}
+
+// Helper function to create a linked list from an array
+Node* createList(const int* values, int size) {
+    if (size == 0) return nullptr;
+
+    Node* head = new Node(values[0]);
+    Node* current = head;
+
+    for (int i = 1; i < size; ++i) {
+        current->next = new Node(values[i]);
+        current = current->next;
+    }
+
+    return head;
+}
+
+// Helper function to print the linked list
+void printList(Node* head) {
+    while (head != nullptr) {
+        std::cout << head->data << " ";
+        head = head->next;
+    }
+    std::cout << std::endl;
+}
+
+// Helper function to merge two lists at a given node
+void mergeLists(Node* firstHead, Node* secondHead, Node* mergeAt) {
+    Node* current = firstHead;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = mergeAt;
+
+    current = secondHead;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = mergeAt;
+}
+
+// Main function to test findIntersection
+int main() {
+    // Create two linked lists
+    int values1[] = {1, 2, 3, 4, 5};
+    int values2[] = {6, 7};
+    Node* firstHead = createList(values1, sizeof(values1) / sizeof(values1[0]));
+    Node* secondHead = createList(values2, sizeof(values2) / sizeof(values2[0]));
+
+    // Create an intersection node
+    Node* intersection = firstHead->next->next; // Node with value 3
+
+    // Merge the two lists at the intersection node
+    mergeLists(firstHead, secondHead, intersection);
+
+    // Find the intersection
+    Node* intersectNode = findIntersection(firstHead, secondHead);
+    if (intersectNode) {
+        std::cout << "Intersection at node with value: " << intersectNode->data << std::endl;
+    } else {
+        std::cout << "No intersection" << std::endl;
+    }
+
+    // Clean up memory (not shown: would need to handle cycle cases as well)
+    return 0;
+}
+
