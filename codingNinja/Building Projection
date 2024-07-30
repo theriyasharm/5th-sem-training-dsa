@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm> // For max function
+#include <bits/stdc++.h> // For other standard libraries
+
+using namespace std;
+
+// Function to calculate the projection area of a grid
+int projectionArea(vector<vector<int>> &grid) {
+    int n = grid.size();
+    int totalArea = 0;
+    vector<int> maxInColumn(n, 0);
+
+    for (int i = 0; i < n; i++) {
+        int maxInRow = 0;
+        for (int j = 0; j < n; j++) {
+            // XY plane projection (top view)
+            if (grid[i][j] > 0) {
+                totalArea++;
+            }
+
+            // YZ plane projection (front view)
+            maxInRow = max(maxInRow, grid[i][j]);
+
+            // ZX plane projection (side view)
+            maxInColumn[j] = max(maxInColumn[j], grid[i][j]);
+        }
+        totalArea += maxInRow;
+    }
+
+    // Add the maximum heights from each column (for ZX projection)
+    for (int j = 0; j < n; j++) {
+        totalArea += maxInColumn[j];
+    }
+
+    return totalArea;
+}
+
+// Main function to test projectionArea function
+int main() {
+    // Example grid
+    vector<vector<int>> grid = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    // Call the function
+    int result = projectionArea(grid);
+
+    // Print the result
+    cout << "Projection area is: " << result << endl;
+
+    return 0;
+}
