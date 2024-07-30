@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int numRookCaptures(vector<vector<char>>& board) {
+        int rookRow, rookCol;
+
+        // Find the position of the rook
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == 'R') {
+                    rookRow = i;
+                    rookCol = j;
+                    break;
+                }
+            }
+        }
+
+        int pawnsAttacked = 0;
+
+        // Check in all four directions: up, down, left, right
+        vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        for (auto dir : directions) {
+            int row = rookRow + dir.first;
+            int col = rookCol + dir.second;
+
+            while (row >= 0 && row < 8 && col >= 0 && col < 8) {
+                if (board[row][col] == 'p') {
+                    pawnsAttacked++;
+                    break;
+                }
+                if (board[row][col] == 'B') {
+                    break;
+                }
+                row += dir.first;
+                col += dir.second;
+            }
+        }
+
+        return pawnsAttacked;
+    }
+};
+
+// Main function to test numRookCaptures function
+int main() {
+    Solution sol;
+
+    // Example board
+    vector<vector<char>> board = {
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'p', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'R', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'p', 'B', 'B', 'B', 'B'},
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
+    };
+
+    // Call the function
+    int result = sol.numRookCaptures(board);
+
+    // Print the result
+    cout << "Number of pawns the rook can capture: " << result << endl;
+
+    return 0;
+}
