@@ -1,0 +1,65 @@
+#include <iostream>
+#include <stack>
+#include <string>
+
+using namespace std;
+
+class Browser {
+private:
+    stack<string> backStack;
+    stack<string> forwardStack;
+    string currentPage;
+
+public:
+    Browser(const string &homepage) : currentPage(homepage) {}
+
+    void visit(const string &url) {
+        // Push the current page to the back stack
+        backStack.push(currentPage);
+
+        // Set new current page
+        currentPage = url;
+
+        // Clear the forward stack
+        while (!forwardStack.empty()) {
+            forwardStack.pop();
+        }
+    }
+
+    string back(int steps) {
+        while (steps > 0 && !backStack.empty()) {
+            forwardStack.push(currentPage);
+            currentPage = backStack.top();
+            backStack.pop();
+            steps--;
+        }
+        return currentPage;
+    }
+
+    string forward(int steps) {
+        while (steps > 0 && !forwardStack.empty()) {
+            backStack.push(currentPage);
+            currentPage = forwardStack.top();
+            forwardStack.pop();
+            steps--;
+        }
+        return currentPage;
+    }
+};
+
+int main() {
+    // Example usage
+    Browser browser("homepage.com");
+
+    browser.visit("page1.com");
+    cout << "Current page: " << browser.back(1) << endl;  // Should print "homepage.com"
+    cout << "Current page: " << browser.forward(1) << endl;  // Should print "page1.com"
+
+    browser.visit("page2.com");
+    cout << "Current page: " << browser.back(1) << endl;  // Should print "page1.com"
+    cout << "Current page: " << browser.back(1) << endl;  // Should print "homepage.com"
+    cout << "Current page: " << browser.forward(2) << endl;  // Should print "page2.com"
+
+    return 0;
+}
+
