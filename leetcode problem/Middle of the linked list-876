@@ -1,0 +1,78 @@
+#include <iostream>
+#include<vector>
+
+using namespace std;
+
+// Definition for singly-linked list node.
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+// Solution class with the middleNode method
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        return slow;
+    }
+};
+
+// Helper function to print the linked list (for debugging)
+void printList(ListNode* head) {
+    while (head) {
+        cout << head->val << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+// Helper function to create a linked list from an array
+ListNode* createList(const vector<int>& values) {
+    if (values.empty()) return nullptr;
+
+    ListNode dummy(0);
+    ListNode* current = &dummy;
+
+    for (int value : values) {
+        current->next = new ListNode(value);
+        current = current->next;
+    }
+
+    return dummy.next;
+}
+
+// Main function to test middleNode
+int main() {
+    Solution solution;
+
+    // Create a test linked list: 1 -> 2 -> 3 -> 4 -> 5
+    vector<int> values = {1, 2, 3, 4, 5};
+    ListNode* head = createList(values);
+
+    // Find the middle node
+    ListNode* middle = solution.middleNode(head);
+
+    // Print the result
+    cout << "Middle node value: " << (middle ? to_string(middle->val) : "List is empty") << endl;
+
+    // Clean up memory
+    while (head) {
+        ListNode* next = head->next;
+        delete head;
+        head = next;
+    }
+
+    return 0;
+}
+
