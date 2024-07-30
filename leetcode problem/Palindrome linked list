@@ -1,0 +1,108 @@
+
+#include <iostream>
+
+// Definition for singly-linked list node
+template <typename T>
+struct LinkedListNode {
+    T data;
+    LinkedListNode* next;
+    LinkedListNode() : data(T()), next(nullptr) {}
+    LinkedListNode(T x) : data(x), next(nullptr) {}
+    LinkedListNode(T x, LinkedListNode* next) : data(x), next(next) {}
+};
+
+// Function to reverse a linked list
+template <typename T>
+LinkedListNode<T>* reverseList(LinkedListNode<T>* head) {
+    LinkedListNode<T>* prev = nullptr;
+    LinkedListNode<T>* current = head;
+    LinkedListNode<T>* next = nullptr;
+
+    while (current != nullptr) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+
+    return prev;
+}
+
+// Function to check if a linked list is a palindrome
+template <typename T>
+bool isPalindrome(LinkedListNode<T>* head) {
+    if (head == nullptr || head->next == nullptr)
+        return true;
+
+    // Find the middle of the linked list
+    LinkedListNode<T>* slow = head;
+    LinkedListNode<T>* fast = head;
+
+    while (fast->next != nullptr && fast->next->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    // Reverse the second half of the linked list
+    LinkedListNode<T>* secondHalf = reverseList(slow->next);
+    LinkedListNode<T>* firstHalf = head;
+
+    // Compare the first half with the reversed second half
+    while (secondHalf != nullptr) {
+        if (firstHalf->data != secondHalf->data)
+            return false;
+        firstHalf = firstHalf->next;
+        secondHalf = secondHalf->next;
+    }
+
+    return true;
+}
+
+// Helper function to create a linked list from an array
+template <typename T>
+LinkedListNode<T>* createList(const T* values, int size) {
+    if (size == 0) return nullptr;
+
+    LinkedListNode<T>* head = new LinkedListNode<T>(values[0]);
+    LinkedListNode<T>* current = head;
+
+    for (int i = 1; i < size; ++i) {
+        current->next = new LinkedListNode<T>(values[i]);
+        current = current->next;
+    }
+
+    return head;
+}
+
+// Helper function to print the linked list
+template <typename T>
+void printList(LinkedListNode<T>* head) {
+    while (head != nullptr) {
+        std::cout << head->data << " ";
+        head = head->next;
+    }
+    std::cout << std::endl;
+}
+
+// Main function to test the isPalindrome function
+int main() {
+    // Create a linked list: 1 -> 2 -> 2 -> 1
+    int values[] = {1, 2, 2, 1};
+    LinkedListNode<int>* head = createList(values, sizeof(values) / sizeof(values[0]));
+
+    std::cout << "Original list: ";
+    printList(head);
+
+    bool result = isPalindrome(head);
+    std::cout << "Is palindrome: " << (result ? "Yes" : "No") << std::endl;
+
+    // Clean up memory
+    LinkedListNode<int>* current = head;
+    while (current != nullptr) {
+        LinkedListNode<int>* next = current->next;
+        delete current;
+        current = next;
+    }
+
+    return 0;
+}
