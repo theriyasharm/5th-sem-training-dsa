@@ -1,0 +1,85 @@
+#include <iostream>
+#include<vector>
+
+using namespace std;
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if (head == NULL || head->next == NULL) {
+            return false;
+        }
+
+        ListNode *slow = head;
+        ListNode *fast = head->next;
+
+        while (slow != fast) {
+            if (fast == NULL || fast->next == NULL) {
+                return false;
+            }
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        return true;
+    }
+};
+
+// Helper function to create a linked list with or without a cycle
+ListNode* createLinkedList(vector<int> values, int pos = -1) {
+    if (values.empty()) return NULL;
+
+    ListNode *head = new ListNode(values[0]);
+    ListNode *curr = head;
+    ListNode *cycleEntry = NULL;
+
+    for (int i = 1; i < values.size(); i++) {
+        curr->next = new ListNode(values[i]);
+        curr = curr->next;
+        if (i == pos) {
+            cycleEntry = curr;
+        }
+    }
+
+    if (cycleEntry) {
+        curr->next = cycleEntry;
+    }
+
+    return head;
+}
+
+// Helper function to delete the linked list to avoid memory leaks
+void deleteLinkedList(ListNode *head) {
+    ListNode *temp;
+    while (head) {
+        temp = head;
+        head = head->next;
+        delete temp;
+    }
+}
+
+// Main function to test hasCycle function
+int main() {
+    Solution sol;
+
+    // Example 1: Linked list without a cycle
+    vector<int> values1 = {3, 2, 0, -4};
+    ListNode *head1 = createLinkedList(values1);
+    cout << "Test 1 (Expected: 0): " << sol.hasCycle(head1) << endl;
+    deleteLinkedList(head1);
+
+    // Example 2: Linked list with a cycle
+    vector<int> values2 = {1, 2};
+    ListNode *head2 = createLinkedList(values2, 1); // Cycle starts at node with value 2
+    cout << "Test 2 (Expected: 1): " << sol.hasCycle(head2) << endl;
+    deleteLinkedList(head2);
+
+    return 0;
+}
