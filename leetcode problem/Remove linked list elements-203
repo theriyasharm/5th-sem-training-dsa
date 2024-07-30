@@ -1,0 +1,94 @@
+#include <iostream>
+#include<vector>
+
+using namespace std;
+
+// Definition for singly-linked list node.
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+// Solution class with the removeElements method
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        // Handle cases where the head needs to be removed
+        while (head != nullptr && head->val == val) {
+            ListNode* temp = head;
+            head = head->next;
+            delete temp;
+        }
+
+        // If the list is empty after removing head nodes
+        if (head == nullptr) {
+            return nullptr;
+        }
+
+        ListNode* current = head;
+        while (current->next != nullptr) {
+            if (current->next->val == val) {
+                ListNode* temp = current->next;
+                current->next = current->next->next;
+                delete temp;
+            } else {
+                current = current->next;
+            }
+        }
+
+        return head;
+    }
+};
+
+// Helper function to print the linked list (for debugging)
+void printList(ListNode* head) {
+    while (head) {
+        cout << head->val << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+// Helper function to create a linked list from an array
+ListNode* createList(const vector<int>& values) {
+    if (values.empty()) return nullptr;
+
+    ListNode dummy(0);
+    ListNode* current = &dummy;
+
+    for (int value : values) {
+        current->next = new ListNode(value);
+        current = current->next;
+    }
+
+    return dummy.next;
+}
+
+// Main function to test removeElements
+int main() {
+    Solution solution;
+
+    // Create a test linked list: 1 -> 2 -> 6 -> 3 -> 4 -> 5 -> 6
+    vector<int> values = {1, 2, 6, 3, 4, 5, 6};
+    ListNode* head = createList(values);
+
+    // Remove all elements with value 6
+    ListNode* newHead = solution.removeElements(head, 6);
+
+    // Print the result
+    cout << "Linked list after removing elements with value 6:" << endl;
+    printList(newHead);
+
+    // Clean up memory
+    while (newHead) {
+        ListNode* next = newHead->next;
+        delete newHead;
+        newHead = next;
+    }
+
+    return 0;
+}
+
