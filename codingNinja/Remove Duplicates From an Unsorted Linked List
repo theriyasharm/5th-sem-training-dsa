@@ -1,0 +1,88 @@
+#include <iostream>
+#include <unordered_set>
+#include<vector>
+using namespace std;
+
+// Definition for singly-linked list node
+struct Node {
+    int data;
+    Node* next;
+    Node(int x) : data(x), next(nullptr) {}
+};
+
+// Function to remove duplicates from a linked list
+Node* removeDuplicates(Node* head) {
+    if (head == nullptr || head->next == nullptr) {
+        return head;  // No duplicates in empty or single-node list
+    }
+
+    unordered_set<int> seen;
+    Node* current = head;
+    Node* prev = nullptr;
+
+    while (current != nullptr) {
+        if (seen.find(current->data) != seen.end()) {
+            // Duplicate found, remove this node
+            prev->next = current->next;
+            delete current;
+            current = prev->next;
+        } else {
+            // New element, add to set and move forward
+            seen.insert(current->data);
+            prev = current;
+            current = current->next;
+        }
+    }
+
+    return head;
+}
+
+// Helper function to print the linked list
+void printList(Node* head) {
+    while (head) {
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+// Helper function to create a linked list from an array
+Node* createList(const vector<int>& values) {
+    if (values.empty()) return nullptr;
+
+    Node dummy(0);
+    Node* current = &dummy;
+
+    for (int value : values) {
+        current->next = new Node(value);
+        current = current->next;
+    }
+
+    return dummy.next;
+}
+
+// Main function to test removeDuplicates
+int main() {
+    // Create a test linked list: 1 -> 2 -> 3 -> 2 -> 4 -> 1
+    vector<int> values = {1, 2, 3, 2, 4, 1};
+    Node* head = createList(values);
+
+    cout << "Original list: ";
+    printList(head);
+
+    // Remove duplicates
+    head = removeDuplicates(head);
+
+    cout << "List after removing duplicates: ";
+    printList(head);
+
+    // Clean up memory
+    while (head) {
+        Node* next = head->next;
+        delete head;
+        head = next;
+    }
+
+    return 0;
+}
+
