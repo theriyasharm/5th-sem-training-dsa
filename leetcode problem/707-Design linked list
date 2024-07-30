@@ -1,0 +1,124 @@
+#include <iostream>
+
+using namespace std;
+
+// Definition for singly-linked list node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node(int val) : val(val), next(nullptr) {}
+};
+
+class MyLinkedList {
+private:
+    Node* head;
+    int size;
+
+public:
+    MyLinkedList() : head(nullptr), size(0) {}
+
+    int get(int index) {
+        if (index < 0 || index >= size) return -1;
+        Node* current = head;
+        for (int i = 0; i < index; i++) {
+            current = current->next;
+        }
+        return current->val;
+    }
+
+    void addAtHead(int val) {
+        Node* newNode = new Node(val);
+        newNode->next = head;
+        head = newNode;
+        size++;
+    }
+
+    void addAtTail(int val) {
+        Node* newNode = new Node(val);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+        size++;
+    }
+
+    void addAtIndex(int index, int val) {
+        if (index < 0 || index > size) return;
+        if (index == 0) {
+            addAtHead(val);
+        } else {
+            Node* newNode = new Node(val);
+            Node* current = head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current->next;
+            }
+            newNode->next = current->next;
+            current->next = newNode;
+            size++;
+        }
+    }
+
+    void deleteAtIndex(int index) {
+        if (index < 0 || index >= size) return;
+        Node* temp;
+        if (index == 0) {
+            temp = head;
+            head = head->next;
+        } else {
+            Node* current = head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current->next;
+            }
+            temp = current->next;
+            current->next = current->next->next;
+        }
+        delete temp;
+        size--;
+    }
+
+    ~MyLinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+};
+
+// Main function to test MyLinkedList
+int main() {
+    MyLinkedList linkedList;
+
+    // Testing addAtHead
+    linkedList.addAtHead(1);
+    linkedList.addAtHead(2);
+    cout << "After addAtHead(1) and addAtHead(2):" << endl;
+    cout << "Get(0): " << linkedList.get(0) << " (Expected: 2)" << endl;
+    cout << "Get(1): " << linkedList.get(1) << " (Expected: 1)" << endl;
+
+    // Testing addAtTail
+    linkedList.addAtTail(3);
+    cout << "After addAtTail(3):" << endl;
+    cout << "Get(2): " << linkedList.get(2) << " (Expected: 3)" << endl;
+
+    // Testing addAtIndex
+    linkedList.addAtIndex(1, 4);
+    cout << "After addAtIndex(1, 4):" << endl;
+    cout << "Get(1): " << linkedList.get(1) << " (Expected: 4)" << endl;
+
+    // Testing deleteAtIndex
+    linkedList.deleteAtIndex(1);
+    cout << "After deleteAtIndex(1):" << endl;
+    cout << "Get(1): " << linkedList.get(1) << " (Expected: 1)" << endl;
+    cout << "Get(2): " << linkedList.get(2) << " (Expected: 3)" << endl;
+
+    return 0;
+}
+
