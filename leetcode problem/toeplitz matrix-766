@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isToeplitzMatrix(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][j] != matrix[i-1][j-1]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+};
+
+// Main function to test isToeplitzMatrix function
+int main() {
+    Solution sol;
+
+    // Example matrix
+    vector<vector<int>> matrix = {
+        {1, 2, 3, 4},
+        {5, 1, 2, 3},
+        {9, 5, 1, 2}
+    };
+
+    // Call the function
+    bool result = sol.isToeplitzMatrix(matrix);
+
+    // Print the result
+    cout << "The matrix is " << (result ? "Toeplitz" : "not Toeplitz") << "." << endl;
+
+    return 0;
+}
+
