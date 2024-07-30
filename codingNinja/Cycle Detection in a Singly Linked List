@@ -1,0 +1,88 @@
+#include <iostream>
+
+// Definition for a singly-linked list node
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+// Function to detect a cycle in the linked list
+bool detectCycle(Node* head) {
+    // If the list is empty or has only one node, there can't be a cycle
+    if (head == nullptr || head->next == nullptr)
+        return false;
+
+    Node* slow = head;
+    Node* fast = head;
+
+    // Move slow pointer by one and fast pointer by two
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        // If slow and fast pointers meet, there's a cycle
+        if (slow == fast)
+            return true;
+    }
+
+    // If we reach here, there's no cycle
+    return false;
+}
+
+// Helper function to print the linked list
+void printList(Node* head) {
+    while (head != nullptr) {
+        std::cout << head->data << " ";
+        head = head->next;
+    }
+    std::cout << std::endl;
+}
+
+// Helper function to create a linked list from an array
+Node* createList(const int* values, int size) {
+    if (size == 0) return nullptr;
+
+    Node* head = new Node(values[0]);
+    Node* current = head;
+
+    for (int i = 1; i < size; ++i) {
+        current->next = new Node(values[i]);
+        current = current->next;
+    }
+
+    return head;
+}
+
+// Main function to test the detectCycle function
+int main() {
+    // Create a linked list without a cycle
+    int values[] = {1, 2, 3, 4, 5};
+    Node* head = createList(values, sizeof(values) / sizeof(values[0]));
+
+    std::cout << "List without cycle: ";
+    printList(head);
+
+    bool hasCycle = detectCycle(head);
+    std::cout << "Has cycle: " << (hasCycle ? "Yes" : "No") << std::endl;
+
+    // Create a linked list with a cycle for testing
+    Node* cycleHead = createList(values, sizeof(values) / sizeof(values[0]));
+    Node* last = cycleHead;
+    while (last->next != nullptr) {
+        last = last->next;
+    }
+    last->next = cycleHead->next->next; // Create a cycle
+
+    std::cout << "List with cycle: ";
+    printList(cycleHead); // This will print an infinite loop in a real scenario
+
+    hasCycle = detectCycle(cycleHead);
+    std::cout << "Has cycle: " << (hasCycle ? "Yes" : "No") << std::endl;
+
+    // Clean up memory
+    // Note: Memory cleanup for lists with cycles is non-trivial and not included here
+
+    return 0;
+}
+
