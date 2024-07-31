@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+
+class Solution {
+public:
+    std::vector<int> nextGreaterElements(std::vector<int>& nums) {
+        int n = nums.size();
+        std::vector<int> result(n, -1);
+        std::stack<int> stack;
+        
+        // Iterate through the array twice to simulate circular array
+        for (int i = 0; i < 2 * n; i++) {
+            int num = nums[i % n];
+            
+            while (!stack.empty() && nums[stack.top()] < num) {
+                result[stack.top()] = num;
+                stack.pop();
+            }
+            
+            if (i < n) {
+                stack.push(i);
+            }
+        }
+        
+        return result;
+    }
+};
+
+int main() {
+    Solution solution;
+    
+    // Example usage
+    std::vector<int> nums = {1, 2, 3, 4, 3};
+    
+    std::vector<int> result = solution.nextGreaterElements(nums);
+    
+    // Print the result
+    std::cout << "Result: ";
+    for (int num : result) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+    
+    return 0;
+}
